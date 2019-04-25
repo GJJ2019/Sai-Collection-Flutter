@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sai_collections/home.dart';
 import 'package:sai_collections/login/register.dart';
@@ -14,6 +17,7 @@ class _LoginState extends State<Login> {
 
   String show = "Show";
   bool passwordVisible = true;
+  bool progressIndicator = false;
 
   String userEmail, userPassword;
 
@@ -72,7 +76,9 @@ class _LoginState extends State<Login> {
                           validator: (value) {
                             if (value.isEmpty)
                               return 'Email Can\'t Be Empty :(';
-                            if (!value.contains('@')) return 'Invalid Email :(';
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value)) return 'Invalid Email :(';
                           },
                           onSaved: (text) {
                             userEmail = text.toString();
@@ -152,28 +158,51 @@ class _LoginState extends State<Login> {
                   height: 40.0,
                 ),
                 RaisedButton(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
-                    child: new Text(
-                      "LOGIN",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 15.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0, vertical: 15.0),
+                  child: Container(
+                    height: 20.0,
+                    width: 120.0,
+                    child: Center(
+                      child: progressIndicator
+                          ? SpinKitThreeBounce(
+                              color: Theme.of(context).primaryColor,
+                              size: 30.0,
+                              duration: Duration(milliseconds: 800),
+                            )
+                          : Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15.0),
+                            ),
                     ),
                   ),
                   color: Theme.of(context).accentColor,
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
+                      progressIndicator = true;
+                      setState(() {});
                       final pref = await SharedPreferences.getInstance();
-                      if (userEmail == 'gauravjajoo98@gmail.com' &&
-                          userPassword == 'Gaurav1998') {
-                        await pref.setBool('status', true);
-                        print(pref.getBool('status'));
+                      FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: userEmail, password: userPassword)
+                          .then((FirebaseUser user) {
+                        pref.setBool('status', true);
+                        // String name = Firestore.instance.collection('/users').getDocuments('name').
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => Home()));
-                      }
+                      }).catchError((e) {
+                        print(e);
+                      });
+                      // if (userEmail == 'gauravjajoo98@gmail.com' &&
+                      //     userPassword == 'Gaurav1998') {
+                      //   await pref.setBool('status', true);
+                      //   print(pref.getBool('status'));
+                      //   Navigator.pushReplacement(context,
+                      //       MaterialPageRoute(builder: (context) => Home()));
+                      // }
                     }
                   },
                   shape: new RoundedRectangleBorder(

@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:sai_collections/list_products.dart';
-
 import 'components/main_components.dart';
 
 class Home extends StatefulWidget {
+  String name;
+  Home({this.name});
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+
+  @override
+  void initState() {
+    super.initState();
+    // sample();
+  }
+
+  // void sample() async {
+  // final pref = await SharedPreferences.getInstance();
+  // name = pref.getString('name');
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +117,7 @@ class _HomeState extends State<Home> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Text(
-                      "Gaurav Jajoo",
+                      "name",
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 18.0),

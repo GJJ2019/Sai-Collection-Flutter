@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "348851849600",
+    "firebase_url": "https://sai-collection-flutter.firebaseio.com",
+    "project_id": "sai-collection-flutter",
+    "storage_bucket": "sai-collection-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348851849600:android:da6bb15fdfb9e344",
+        "android_client_info": {
+          "package_name": "com.example.sai_collections"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348851849600-f0rv6o455mn4grk5oft7g7fq2ter8k9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sai_collections",
+            "certificate_hash": "03e9c0b7f8b78efb1f2cd8cb80695a01344b0dbc"
+          }
+        },
+        {
+          "client_id": "348851849600-7sehpjqiqvh3lmih6ti695769e2jqt85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKXhglxSsHHTZ-0QkhdNi6m4P2qcKjfJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348851849600-7sehpjqiqvh3lmih6ti695769e2jqt85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

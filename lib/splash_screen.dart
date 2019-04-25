@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SpinKitThreeBounce(
               color: Theme.of(context).accentColor,
               size: 30.0,
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 800),
             ),
           ],
         ),
