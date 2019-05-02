@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:sai_collections/component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:sai_collections/home.dart';
 import 'package:sai_collections/login/register.dart';
 
@@ -21,9 +25,45 @@ class _LoginState extends State<Login> {
 
   String userEmail, userPassword;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  Component component = new Component();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // void showInSnackBar(String value) {
+  //   _scaffoldKey.currentState.showSnackBar(new SnackBar(
+  //     content: Text(
+  //       value,
+  //       style: TextStyle(color: Theme.of(context).primaryColor),
+  //     ),
+  //     backgroundColor: Theme.of(context).accentColor,
+  //   ));
+  // }
+
   @override
   Widget build(BuildContext context) {
+    Future<FirebaseUser> signInAccount(String email, String password) async {
+      FirebaseUser user;
+
+      try {
+        user = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        return user;
+      } on PlatformException catch (e) {
+        // print('failed');
+        // print(e);
+        return null;
+      }
+    }
+
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Center(
           child: Form(
@@ -50,7 +90,7 @@ class _LoginState extends State<Login> {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 40.0),
                       child: Icon(
                         Icons.email,
                         color: Theme.of(context).accentColor,
@@ -59,7 +99,7 @@ class _LoginState extends State<Login> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 40.0, left: 20.0),
+                        padding: const EdgeInsets.only(right: 30.0, left: 20.0),
                         child: TextFormField(
                           style: TextStyle(fontSize: 20.0),
                           decoration: InputDecoration(
@@ -68,7 +108,8 @@ class _LoginState extends State<Login> {
                               fontSize: 18.0,
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.cyan),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -82,7 +123,7 @@ class _LoginState extends State<Login> {
                           },
                           onSaved: (text) {
                             userEmail = text.toString();
-                            print(userEmail);
+                            // print(userEmail);
                           },
                         ),
                       ),
@@ -95,7 +136,7 @@ class _LoginState extends State<Login> {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 40.0),
                       child: Icon(
                         Icons.lock,
                         color: Theme.of(context).accentColor,
@@ -111,7 +152,8 @@ class _LoginState extends State<Login> {
                             hintText: "Password",
                             hintStyle: TextStyle(fontSize: 18.0),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.cyan),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor),
                             ),
                           ),
                           obscureText: passwordVisible,
@@ -130,7 +172,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 40.0, left: 10.0),
+                      padding: const EdgeInsets.only(right: 30.0, left: 10.0),
                       child: GestureDetector(
                         child: Text(
                           show,
@@ -165,11 +207,8 @@ class _LoginState extends State<Login> {
                     width: 120.0,
                     child: Center(
                       child: progressIndicator
-                          ? SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColor,
-                              size: 30.0,
-                              duration: Duration(milliseconds: 800),
-                            )
+                          ? component.spinKitThreeBounce(
+                              context, Theme.of(context).primaryColor)
                           : Text(
                               "LOGIN",
                               style: TextStyle(
@@ -180,29 +219,69 @@ class _LoginState extends State<Login> {
                   ),
                   color: Theme.of(context).accentColor,
                   onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      progressIndicator = true;
-                      setState(() {});
-                      final pref = await SharedPreferences.getInstance();
-                      FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: userEmail, password: userPassword)
-                          .then((FirebaseUser user) {
-                        pref.setBool('status', true);
-                        // String name = Firestore.instance.collection('/users').getDocuments('name').
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => Home()));
-                      }).catchError((e) {
-                        print(e);
-                      });
-                      // if (userEmail == 'gauravjajoo98@gmail.com' &&
-                      //     userPassword == 'Gaurav1998') {
-                      //   await pref.setBool('status', true);
-                      //   print(pref.getBool('status'));
-                      //   Navigator.pushReplacement(context,
-                      //       MaterialPageRoute(builder: (context) => Home()));
-                      // }
+                    print(userEmail);
+                    if (!(await component.checkInternetConnection())) {
+                      component.showInSnackBar(context, _scaffoldKey,
+                          "Please Connect To The Internet");
+                    } else {
+                      if (_formKey.currentState.validate()) {
+                        _formKey.currentState.save();
+                        progressIndicator = true;
+                        setState(() {});
+                        final pref = await SharedPreferences.getInstance();
+                        // name = await Firestore.instance
+                        //     .collection('users')
+                        //     .getDocuments();
+                        // setState(() {
+                        // print(name.documents[].data['email']);
+                        // });
+                        // try {
+                        // FirebaseAuth.instance
+                        //     .signInWithEmailAndPassword(
+                        //         email: userEmail, password: userPassword)
+                        //     .then((FirebaseUser user) {
+                        //   pref.setBool('status', true);
+                        //   pref.setString('email', userEmail);
+                        //   Navigator.pushReplacement(context,
+                        //       MaterialPageRoute(builder: (context) => Home()));
+                        //   }).catchError((PlatformException e) {
+                        //   print(e);
+                        //   print('failed');
+                        // });
+                        signInAccount(userEmail, userPassword)
+                            .then((FirebaseUser user) {
+                          if (user != null) {
+                            pref.setBool('status', true);
+                            pref.setString('email', userEmail);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Home()));
+                          } else {
+                            progressIndicator = false;
+                            setState(() {});
+                            component.showInSnackBar(context, _scaffoldKey,
+                                "Email Or Password Is Incorrect");
+                            print('failed');
+                          }
+                        });
+                        // } on PlatformException catch (e) {
+                        //   print(e);
+                        // } finally {
+                        //   if (test == null) {
+                        //     // print('failed');
+                        //     Navigator.pushReplacement(context,
+                        //         MaterialPageRoute(builder: (context) => Login()));
+                        //   }
+                        // }
+                        // if (userEmail == 'gauravjajoo98@gmail.com' &&
+                        //     userPassword == 'Gaurav1998') {
+                        //   await pref.setBool('status', true);
+                        //   print(pref.getBool('status'));
+                        //   Navigator.pushReplacement(context,
+                        //       MaterialPageRoute(builder: (context) => Home()));
+                        // }
+                      }
                     }
                   },
                   shape: new RoundedRectangleBorder(

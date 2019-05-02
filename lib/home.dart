@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sai_collections/list_products.dart';
+import 'package:sai_collections/login/login.dart';
 import 'components/main_components.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
-  String name;
-  Home({this.name});
+  // String email;
+  // Home({this.email});
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  String email;
 
   @override
   void initState() {
     super.initState();
-    // sample();
+    // print(widget.name);
+    sample();
   }
 
-  // void sample() async {
-  // final pref = await SharedPreferences.getInstance();
-  // name = pref.getString('name');
-  // }
+  void sample() async {
+    final pref = await SharedPreferences.getInstance();
+
+    if (pref.getString('email') != null) {
+      email = pref.getString('email');
+    } else {
+      email = 'Guest';
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +112,13 @@ class _HomeState extends State<Home> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  FlutterLogo(
-                    size: 50.0,
+                  CircleAvatar(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      email[0].toUpperCase(),
+                      style: TextStyle(color: Theme.of(context).accentColor),
+                    ),
+                    radius: 25.0,
                   ),
                   SizedBox(
                     height: 20.0,
@@ -114,14 +131,10 @@ class _HomeState extends State<Home> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Text(
-                      "name",
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18.0),
-                    ),
+                  Text(
+                    email,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 15.0),
                   )
                 ],
               ),
@@ -138,7 +151,10 @@ class _HomeState extends State<Home> {
                 "Home",
                 style: Theme.of(context).textTheme.subhead,
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Home()));
+              },
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -218,7 +234,17 @@ class _HomeState extends State<Home> {
                 "Log Out",
                 style: Theme.of(context).textTheme.subhead,
               ),
-              onTap: () {},
+              onTap: () async {
+                final pref = await SharedPreferences.getInstance();
+                FirebaseAuth.instance.signOut().then((value) {
+                  pref.setBool('status', false);
+                  pref.setString('email', 'Guest');
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                }).catchError((e) {
+                  print(e);
+                });
+              },
             ),
             Container(
               margin:

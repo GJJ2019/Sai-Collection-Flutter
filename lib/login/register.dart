@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sai_collections/component.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -13,6 +15,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   String show = "Show";
   bool passwordVisible = true;
@@ -20,9 +23,43 @@ class _RegisterState extends State<Register> {
 
   String userEmail, userPassword, userName;
 
+  Component component = new Component();
+  // var _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
+    // Future<FirebaseUser> createUser(email, password, displayName) async {
+    //   final FirebaseUser user = await _auth.createUserWithEmailAndPassword(
+    //       email: email, password: password);
+
+    //   // UserUpdateInfo info = new UserUpdateInfo();
+    //   // info.displayName = displayName;
+    //   // _auth.updateProfile(info);
+    //   await user.reload();
+    //   // user = _auth.getCurrentUser();
+
+    //   Firestore.instance.collection('users').document().setData({
+    //     'name': displayName,
+    //     'uid': user.uid,
+    //     'email': user.email,
+    //     'isEmailVerified': user.isEmailVerified,
+    //     'photoUrl': user.photoUrl,
+    //     // }).then((value) {
+    //     //   Navigator.pushReplacement(
+    //     //       context, MaterialPageRoute(builder: (context) => Home()));
+    //     // }).catchError((e) {
+    //     //   print(e);
+    //   });
+
+    //   print(user.displayName);
+    //   print(user.email);
+    //   print(user.uid);
+
+    //   return user;
+    // }
+
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Center(
           child: Form(
@@ -43,7 +80,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 40.0),
                       child: Icon(
                         Icons.email,
                         color: Theme.of(context).accentColor,
@@ -52,7 +89,7 @@ class _RegisterState extends State<Register> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 40.0, left: 20.0),
+                        padding: const EdgeInsets.only(right: 30.0, left: 20.0),
                         child: TextFormField(
                           style: TextStyle(fontSize: 20.0),
                           decoration: InputDecoration(
@@ -61,7 +98,8 @@ class _RegisterState extends State<Register> {
                               fontSize: 18.0,
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.cyan),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor),
                             ),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -88,7 +126,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 40.0),
                       child: Icon(
                         Icons.person,
                         color: Theme.of(context).accentColor,
@@ -97,7 +135,7 @@ class _RegisterState extends State<Register> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 40.0, left: 20.0),
+                        padding: const EdgeInsets.only(right: 30.0, left: 20.0),
                         child: TextFormField(
                           style: TextStyle(fontSize: 20.0),
                           decoration: InputDecoration(
@@ -106,7 +144,8 @@ class _RegisterState extends State<Register> {
                               fontSize: 18.0,
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.cyan),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor),
                             ),
                           ),
                           cursorColor: Theme.of(context).accentColor,
@@ -130,7 +169,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
+                      padding: const EdgeInsets.only(left: 40.0),
                       child: Icon(
                         Icons.lock,
                         color: Theme.of(context).accentColor,
@@ -148,7 +187,8 @@ class _RegisterState extends State<Register> {
                               fontSize: 18.0,
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.cyan),
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).accentColor),
                             ),
                           ),
                           obscureText: passwordVisible,
@@ -167,7 +207,7 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 40.0, left: 10.0),
+                      padding: const EdgeInsets.only(right: 30.0, left: 10.0),
                       child: GestureDetector(
                         child: Text(
                           show,
@@ -224,11 +264,8 @@ class _RegisterState extends State<Register> {
                     width: 150.0,
                     child: Center(
                       child: progressIndicator
-                          ? SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColor,
-                              size: 30.0,
-                              duration: Duration(milliseconds: 800),
-                            )
+                          ? component.spinKitThreeBounce(
+                              context, Theme.of(context).primaryColor)
                           : Text(
                               "CREATE ACCOUNT",
                               style: TextStyle(
@@ -245,20 +282,38 @@ class _RegisterState extends State<Register> {
                   color: Theme.of(context).accentColor,
                   onPressed: () async {
                     final pref = await SharedPreferences.getInstance();
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      progressIndicator = true;
-                      setState(() {});
-                      pref.setString('name', userName);
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: userEmail, password: userPassword)
-                          .then((FirebaseUser signedInUser) {
-                        pref.setBool('status', true);
-                        UserManagment().storeNewUser(signedInUser, context);
-                      }).catchError((e) {
-                        print(e);
-                      });
+                    if (!(await component.checkInternetConnection())) {
+                      component.showInSnackBar(context, _scaffoldKey,
+                          "Please Connect To The Internet");
+                    } else {
+                      if (_formKey.currentState.validate()) {
+                        _formKey.currentState.save();
+                        progressIndicator = true;
+                        setState(() {});
+                        pref.setString('name', userName);
+                        pref.setString('email', userEmail);
+                        // createUser(userEmail, userPassword, userName)
+                        //     .then((FirebaseUser signedInUser) {
+                        //   pref.setBool('status', true);
+                        //   Navigator.pushReplacement(context,
+                        //       MaterialPageRoute(builder: (context) => Home()));
+                        //   // UserManagment().storeNewUser(signedInUser, context);
+                        // }).catchError((e) {
+                        //   print(e);
+                        // });
+                        FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: userEmail, password: userPassword)
+                            .then((FirebaseUser signedInUser) {
+                              pref.setBool('status', true);
+                              UserManagment()
+                                  .storeNewUser(signedInUser, context);
+                            })
+                            .timeout((new Duration(seconds: 15)))
+                            .catchError((e) {
+                              print(e);
+                            });
+                      }
                     }
                   },
                   shape: new RoundedRectangleBorder(
