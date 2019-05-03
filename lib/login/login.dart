@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:sai_collections/component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,25 +26,14 @@ class _LoginState extends State<Login> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  Component component = new Component();
-
   @override
   void initState() {
     super.initState();
   }
 
-  // void showInSnackBar(String value) {
-  //   _scaffoldKey.currentState.showSnackBar(new SnackBar(
-  //     content: Text(
-  //       value,
-  //       style: TextStyle(color: Theme.of(context).primaryColor),
-  //     ),
-  //     backgroundColor: Theme.of(context).accentColor,
-  //   ));
-  // }
-
   @override
   Widget build(BuildContext context) {
+    Component component = new Component();
     Future<FirebaseUser> signInAccount(String email, String password) async {
       FirebaseUser user;
 
@@ -100,32 +86,7 @@ class _LoginState extends State<Login> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 30.0, left: 20.0),
-                        child: TextFormField(
-                          style: TextStyle(fontSize: 20.0),
-                          decoration: InputDecoration(
-                            hintText: "Email",
-                            hintStyle: TextStyle(
-                              fontSize: 18.0,
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor),
-                            ),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          cursorColor: Theme.of(context).accentColor,
-                          validator: (value) {
-                            if (value.isEmpty)
-                              return 'Email Can\'t Be Empty :(';
-                            if (!RegExp(
-                                    r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                .hasMatch(value)) return 'Invalid Email :(';
-                          },
-                          onSaved: (text) {
-                            userEmail = text.toString();
-                            // print(userEmail);
-                          },
-                        ),
+                        child: component.textFormFieldEmail(context),
                       ),
                     )
                   ],
@@ -146,29 +107,8 @@ class _LoginState extends State<Login> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 20.0),
-                        child: TextFormField(
-                          style: TextStyle(fontSize: 20.0),
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 18.0),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).accentColor),
-                            ),
-                          ),
-                          obscureText: passwordVisible,
-                          cursorColor: Theme.of(context).accentColor,
-                          validator: (value) {
-                            if (value.isEmpty)
-                              return 'Password Can\'t Be Empty';
-                            if (value.length < 4)
-                              return 'Your Password Is To Short';
-                          },
-                          onSaved: (text) {
-                            userPassword = text;
-                            print(userPassword);
-                          },
-                        ),
+                        child: component.textFormFieldPassword(context, 
+                            passwordVisible),
                       ),
                     ),
                     Padding(
@@ -207,8 +147,8 @@ class _LoginState extends State<Login> {
                     width: 120.0,
                     child: Center(
                       child: progressIndicator
-                          ? component.spinKitThreeBounce(
-                              context, Theme.of(context).primaryColor)
+                          ? component.spinKitThreeBounce(context, 
+                              Theme.of(context).primaryColor)
                           : Text(
                               "LOGIN",
                               style: TextStyle(
@@ -219,35 +159,18 @@ class _LoginState extends State<Login> {
                   ),
                   color: Theme.of(context).accentColor,
                   onPressed: () async {
-                    print(userEmail);
-                    if (!(await component.checkInternetConnection())) {
+                    // userEmail = component.userEmail;
+                    if (!(await component.checkInternetConnection(context))) {
                       component.showInSnackBar(context, _scaffoldKey,
                           "Please Connect To The Internet");
                     } else {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
                         progressIndicator = true;
+                        userEmail = component.userEmail;
+                        userPassword = component.userPassword;
                         setState(() {});
                         final pref = await SharedPreferences.getInstance();
-                        // name = await Firestore.instance
-                        //     .collection('users')
-                        //     .getDocuments();
-                        // setState(() {
-                        // print(name.documents[].data['email']);
-                        // });
-                        // try {
-                        // FirebaseAuth.instance
-                        //     .signInWithEmailAndPassword(
-                        //         email: userEmail, password: userPassword)
-                        //     .then((FirebaseUser user) {
-                        //   pref.setBool('status', true);
-                        //   pref.setString('email', userEmail);
-                        //   Navigator.pushReplacement(context,
-                        //       MaterialPageRoute(builder: (context) => Home()));
-                        //   }).catchError((PlatformException e) {
-                        //   print(e);
-                        //   print('failed');
-                        // });
                         signInAccount(userEmail, userPassword)
                             .then((FirebaseUser user) {
                           if (user != null) {
@@ -265,22 +188,6 @@ class _LoginState extends State<Login> {
                             print('failed');
                           }
                         });
-                        // } on PlatformException catch (e) {
-                        //   print(e);
-                        // } finally {
-                        //   if (test == null) {
-                        //     // print('failed');
-                        //     Navigator.pushReplacement(context,
-                        //         MaterialPageRoute(builder: (context) => Login()));
-                        //   }
-                        // }
-                        // if (userEmail == 'gauravjajoo98@gmail.com' &&
-                        //     userPassword == 'Gaurav1998') {
-                        //   await pref.setBool('status', true);
-                        //   print(pref.getBool('status'));
-                        //   Navigator.pushReplacement(context,
-                        //       MaterialPageRoute(builder: (context) => Home()));
-                        // }
                       }
                     }
                   },
@@ -289,18 +196,6 @@ class _LoginState extends State<Login> {
                   ),
                   splashColor: Theme.of(context).primaryColor,
                 ),
-                // MaterialButton(
-                //     height: 45.0,
-                //     child: Text(
-                //       'LOGIN',
-                //       style: TextStyle(
-                //           fontSize: 20.0, color: Theme.of(context).primaryColor),
-                //     ),
-                //     color: Theme.of(context).accentColor,
-                //     onPressed: () {},
-                //     splashColor: Theme.of(context).primaryColorDark,
-                //     shape: new RoundedRectangleBorder(
-                //         borderRadius: new BorderRadius.circular(30.0))),
                 SizedBox(
                   height: 20.0,
                 ),
@@ -358,15 +253,6 @@ class _LoginState extends State<Login> {
                 SizedBox(
                   height: 10.0,
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                //   child: Align(
-                //     alignment: Alignment.bottomCenter,
-                //     child: Divider(
-                //       color: Theme.of(context).accentColor,
-                //     ),
-                //   ),
-                // )
               ],
             ),
           ),

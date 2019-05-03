@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:sai_collections/component.dart';
 import 'package:sai_collections/list_products.dart';
 import 'package:sai_collections/login/login.dart';
 import 'components/main_components.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   // String email;
@@ -13,7 +15,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String email;
+  String email = 'Guest';
+  bool internet = false;
+
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -24,19 +32,28 @@ class _HomeState extends State<Home> {
 
   void sample() async {
     final pref = await SharedPreferences.getInstance();
+    internet = await Component().checkInternetConnection(context);
+    print(internet);
 
     if (pref.getString('email') != null) {
       email = pref.getString('email');
-    } else {
-      email = 'Guest';
     }
 
     setState(() {});
   }
 
+  Future<Null> refresh() async {
+    internet = await Component().checkInternetConnection(context);
+    setState(() {});
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height * 0.45;
+    double width = MediaQuery.of(context).size.width * 0.21;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Sai Collections"),
         iconTheme: IconThemeData(color: Theme.of(context).accentColor),
@@ -56,32 +73,57 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              child: MainComponent(name: 'T-shirt', imageName: 't_shirt'),
-              onTap: () {
-                print("hey there");
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ListProducts()));
-              },
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            MainComponent(name: 'Formal Shirts', imageName: 'formal_shirts'),
-            SizedBox(
-              height: 15.0,
-            ),
-            MainComponent(name: 'Jeans', imageName: 'jeans'),
-            SizedBox(
-              height: 12.0,
-            ),
-            MainComponent(name: 'Lowers', imageName: 'lowers'),
-          ],
-        ),
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        color: Theme.of(context).accentColor,
+        onRefresh: refresh,
+        child: internet
+            ? SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    GestureDetector(
+                      child:
+                          MainComponent(name: 'T-shirt', imageName: 't_shirt'),
+                      onTap: () {
+                        print("hey there");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ListProducts()));
+                      },
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    MainComponent(
+                        name: 'Formal Shirts', imageName: 'formal_shirts'),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    MainComponent(name: 'Jeans', imageName: 'jeans'),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    MainComponent(name: 'Lowers', imageName: 'lowers'),
+                  ],
+                ),
+              )
+            : GestureDetector(
+                child: ListView(
+                  padding: EdgeInsets.only(top: height, left: width),
+                  children: <Widget>[
+                    Text(
+                      "No Internet Connection",
+                      style: TextStyle(
+                          color: Theme.of(context).accentColor, fontSize: 20.0),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Component().showInSnackBar(context, _scaffoldKey, "Pull For Refreshing Page");
+                },
+              ),
       ),
       // body: Container(
       //   margin: const EdgeInsets.all(20.0),

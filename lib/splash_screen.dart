@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:sai_collections/component.dart';
 
 import 'package:sai_collections/home.dart';
@@ -14,11 +13,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Component component = new Component();
   bool internet;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  Component component = new Component();
   @override
   void initState() {
     super.initState();
@@ -26,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void sample() async {
-    internet = await component.checkInternetConnection();
+    internet = await component.checkInternetConnection(context);
     final pref = await SharedPreferences.getInstance();
     bool t = pref.getBool('status');
     if (t == null) {
@@ -70,7 +68,8 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(
                 height: 10.0,
               ),
-              component.spinKitThreeBounce(context, Theme.of(context).accentColor)
+              component.spinKitThreeBounce(
+                  context, Theme.of(context).accentColor)
             ],
           ),
         ));

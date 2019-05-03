@@ -40,7 +40,7 @@ class _CardProductState extends State<CardProduct> {
             )
           ],
         ),
-        elevation: 3.0,
+        elevation: 1.5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
