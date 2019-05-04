@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sai_collections/components/component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:sai_collections/component.dart';
-import 'package:sai_collections/list_products.dart';
-import 'package:sai_collections/login/login.dart';
 import 'components/main_components.dart';
 
-class Home extends StatefulWidget {
-  // String email;
-  // Home({this.email});
+class Home extends StatefulWidget {  
   @override
   _HomeState createState() => _HomeState();
 }
@@ -26,7 +21,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // print(widget.name);
     sample();
   }
 
@@ -82,17 +76,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    GestureDetector(
-                      child:
-                          MainComponent(name: 'T-shirt', imageName: 't_shirt'),
-                      onTap: () {
-                        print("hey there");
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ListProducts()));
-                      },
-                    ),
+                    MainComponent(name: 'T-Shirt', imageName: 't_shirt'),
                     SizedBox(
                       height: 15.0,
                     ),
@@ -121,195 +105,176 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 onTap: () {
-                  Component().showInSnackBar(context, _scaffoldKey, "Pull For Refreshing Page");
+                  Component().showInSnackBar(
+                      context, _scaffoldKey, "Pull For Refreshing Page");
                 },
               ),
       ),
-      // body: Container(
-      //   margin: const EdgeInsets.all(20.0),
-      //   height: 200.0,
-      //   width: 350.0,
-      //   child: Center(
-      //     child: Text(
-      //       "T-shirt",
-      //       style: TextStyle(
-      //         color: Colors.cyan,
-      //         fontSize: 30.0,
+      drawer: Component().showDrawer(context, email),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //       DrawerHeader(
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: <Widget>[
+      //             CircleAvatar(
+      //               backgroundColor: Theme.of(context).primaryColor,
+      //               child: Text(
+      //                 email[0].toUpperCase(),
+      //                 style: TextStyle(color: Theme.of(context).accentColor),
+      //               ),
+      //               radius: 25.0,
+      //             ),
+      //             SizedBox(
+      //               height: 20.0,
+      //             ),
+      //             Text(
+      //               "Hello,",
+      //               style: TextStyle(
+      //                   color: Theme.of(context).primaryColor, fontSize: 30.0),
+      //             ),
+      //             SizedBox(
+      //               height: 10.0,
+      //             ),
+      //             Text(
+      //               email,
+      //               style: TextStyle(
+      //                   color: Theme.of(context).primaryColor, fontSize: 15.0),
+      //             )
+      //           ],
+      //         ),
+      //         decoration: BoxDecoration(
+      //           color: Theme.of(context).accentColor,
+      //         ),
       //       ),
-      //     ),
-      //   ),
-      //   foregroundDecoration: BoxDecoration(
-      //     borderRadius: BorderRadius.circular(18.0),
-      //     image: DecorationImage(
-      //       image: AssetImage('assets/images/t_shirt.jpg'),
-      //       fit: BoxFit.cover,
-      //     ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.home,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "Home",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () {
+      //           Navigator.pushReplacement(
+      //               context, MaterialPageRoute(builder: (context) => Home()));
+      //         },
+      //       ),
+      //       Container(
+      //         margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.shopping_cart,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "My Cart",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () {},
+      //       ),
+      //       Container(
+      //         margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.favorite,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "My Wishlist",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () {},
+      //       ),
+      //       Container(
+      //         margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.add_shopping_cart,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "My Order",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () {},
+      //       ),
+      //       Container(
+      //         margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.person,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "My Account",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () {},
+      //       ),
+      //       Container(
+      //         margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       ListTile(
+      //         leading: Icon(
+      //           Icons.power_settings_new,
+      //           color: Theme.of(context).accentColor,
+      //         ),
+      //         title: Text(
+      //           "Log Out",
+      //           style: Theme.of(context).textTheme.subhead,
+      //         ),
+      //         onTap: () async {
+      //           final pref = await SharedPreferences.getInstance();
+      //           FirebaseAuth.instance.signOut().then((value) {
+      //             pref.setBool('status', false);
+      //             pref.setString('email', 'Guest');
+      //             Navigator.pushReplacement(context,
+      //                 MaterialPageRoute(builder: (context) => Login()));
+      //           }).catchError((e) {
+      //             print(e);
+      //           });
+      //         },
+      //       ),
+      //       Container(
+      //         margin:
+      //             const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+      //         color: Theme.of(context).accentColor,
+      //         height: 1.0,
+      //       ),
+      //       Center(
+      //           child: Text(
+      //         "Created By GJJ1998",
+      //         style: TextStyle(fontSize: 15.0, color: Colors.grey[700]),
+      //       )),
+      //       SizedBox(
+      //         height: 7.0,
+      //       ),
+      //       Center(
+      //           child: Text(
+      //         "\u00A9 Copyright By Grass-International",
+      //         style: TextStyle(fontSize: 12.0, color: Colors.grey),
+      //       ))
+      //     ],
       //   ),
       // ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CircleAvatar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    child: Text(
-                      email[0].toUpperCase(),
-                      style: TextStyle(color: Theme.of(context).accentColor),
-                    ),
-                    radius: 25.0,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(
-                    "Hello,",
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 30.0),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    email,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 15.0),
-                  )
-                ],
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.home,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "Home",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Home()));
-              },
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.shopping_cart,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "My Cart",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () {},
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.favorite,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "My Wishlist",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () {},
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.add_shopping_cart,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "My Order",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () {},
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.person,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "My Account",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () {},
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.power_settings_new,
-                color: Theme.of(context).accentColor,
-              ),
-              title: Text(
-                "Log Out",
-                style: Theme.of(context).textTheme.subhead,
-              ),
-              onTap: () async {
-                final pref = await SharedPreferences.getInstance();
-                FirebaseAuth.instance.signOut().then((value) {
-                  pref.setBool('status', false);
-                  pref.setString('email', 'Guest');
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Login()));
-                }).catchError((e) {
-                  print(e);
-                });
-              },
-            ),
-            Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-              color: Theme.of(context).accentColor,
-              height: 1.0,
-            ),
-            Center(
-                child: Text(
-              "Created By GJJ1998",
-              style: TextStyle(fontSize: 15.0, color: Colors.grey[700]),
-            )),
-            SizedBox(
-              height: 7.0,
-            ),
-            Center(
-                child: Text(
-              "\u00A9 Copyright By Grass-International",
-              style: TextStyle(fontSize: 12.0, color: Colors.grey),
-            ))
-          ],
-        ),
-      ),
     );
   }
 }

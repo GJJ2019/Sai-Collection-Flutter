@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sai_collections/components/card_product.dart';
-import 'package:sai_collections/components/item_details.dart';
 
 class ListProducts extends StatefulWidget {
+  String name;
+  ListProducts(this.name);
+
   @override
   _ListProductsState createState() => _ListProductsState();
 }
@@ -12,7 +14,9 @@ class _ListProductsState extends State<ListProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hey There"),
+        title: Text(
+          widget.name,
+        ),
         iconTheme: IconThemeData(color: Theme.of(context).accentColor),
         elevation: 0.0,
         bottom: PreferredSize(
@@ -34,33 +38,14 @@ class _ListProductsState extends State<ListProducts> {
         itemCount: 8,
         itemBuilder: (context, i) {
           return Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.only(top: 15.0, bottom: 5.0),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  GestureDetector(
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.45,
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      child: CardProduct(),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ItemDetails()));
-                    },
-                  ),
-                  // SizedBox(
-                  //   width: 10.0,
-                  // ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.45,
-                    width: MediaQuery.of(context).size.width * 0.50,
-                    child: CardProduct(),
-                  ),
+                  CardProduct(),
+                  CardProduct(),
                 ],
               ),
             ),

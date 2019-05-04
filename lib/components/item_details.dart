@@ -41,7 +41,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                 return Builder(
                   builder: (BuildContext context) {
                     return Container(
-                      margin: const EdgeInsets.only(left: 15.0, top: 10.0),
+                      margin: const EdgeInsets.only(top: 10.0, left: 5.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20.0),
                         child: Image.asset(

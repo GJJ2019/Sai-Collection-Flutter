@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:sai_collections/list_products.dart';
+
 class MainComponent extends StatelessWidget {
-  
-  String name, imageName;
-  MainComponent({this.name, this.imageName});  
+  String name, imageName, userEmail, userPassword, userName;
+  MainComponent({this.name, this.imageName});
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return GestureDetector(
+      child: Container(
         margin: EdgeInsets.all(20.0),
         width: 350.0,
         height: 200.0,
@@ -27,11 +29,19 @@ class MainComponent extends StatelessWidget {
             Center(
               child: Text(
                 name,
-                style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 40.0, fontFamily: 'Gotham Light'),
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 40.0,
+                    fontFamily: 'Gotham Light'),
               ),
             )
           ],
         ),
-      );
+      ),
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ListProducts(name)));
+      },
+    );
   }
 }

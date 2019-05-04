@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:sai_collections/component.dart';
+import 'package:sai_collections/components/component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:sai_collections/home.dart';
@@ -24,7 +24,9 @@ class _LoginState extends State<Login> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();  
+
+  Component component = new Component();
 
   @override
   void initState() {
@@ -33,7 +35,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    Component component = new Component();
     Future<FirebaseUser> signInAccount(String email, String password) async {
       FirebaseUser user;
 
@@ -42,8 +43,6 @@ class _LoginState extends State<Login> {
             email: email, password: password);
         return user;
       } on PlatformException catch (e) {
-        // print('failed');
-        // print(e);
         return null;
       }
     }

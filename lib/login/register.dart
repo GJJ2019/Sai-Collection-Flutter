@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sai_collections/component.dart';
+import 'package:sai_collections/components/component.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,9 +21,9 @@ class _RegisterState extends State<Register> {
   bool progressIndicator = false;
 
   String userEmail, userPassword, userName;
-  Component component = new Component();
 
   // var _auth = FirebaseAuth.instance;
+  Component component = new Component();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _RegisterState extends State<Register> {
             key: _formKey,
             child: Column(
               children: <Widget>[
-                SizedBox(
+                SizedBox(                  
                   height: 50.0,
                 ),
                 Text(

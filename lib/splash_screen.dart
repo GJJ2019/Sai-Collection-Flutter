@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sai_collections/component.dart';
+import 'package:sai_collections/components/component.dart';
 
 import 'package:sai_collections/home.dart';
 import 'package:sai_collections/login/login.dart';
@@ -16,7 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
   bool internet;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Component component = new Component();
   @override
   void initState() {
     super.initState();
@@ -24,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void sample() async {
-    internet = await component.checkInternetConnection(context);
+    internet = await Component().checkInternetConnection(context);
     final pref = await SharedPreferences.getInstance();
     bool t = pref.getBool('status');
     if (t == null) {
@@ -32,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     if (!internet) {
-      component.showInSnackBar(
+      Component().showInSnackBar(
           context, _scaffoldKey, "Check Your Internet Connection");
     }
     new Timer(
@@ -68,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(
                 height: 10.0,
               ),
-              component.spinKitThreeBounce(
+              Component().spinKitThreeBounce(
                   context, Theme.of(context).accentColor)
             ],
           ),
