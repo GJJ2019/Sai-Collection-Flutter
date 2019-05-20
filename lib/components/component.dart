@@ -2,7 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart' show SpinKitThreeBounce;
-import 'package:sai_collections/home.dart';
+// import 'package:sai_collections/home.dart';
 import 'package:sai_collections/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -159,8 +159,9 @@ class Component {
               style: Theme.of(context).textTheme.subhead,
             ),
             onTap: () {
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => Home()));
+              // Navigator.pushReplacement(
+              //     context, MaterialPageRoute(builder: (context) => Home()));
+              Navigator.of(context).pop();
             },
           ),
           Container(
